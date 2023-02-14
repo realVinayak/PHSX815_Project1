@@ -1,3 +1,7 @@
+# Provides functions to read and write list to text files. Added support
+# for multidimensional list
+
+
 LINE_SEP = '\n'
 CHAR_SEP = ','
 
@@ -19,12 +23,12 @@ def read_multi_list(file_name):
 
 def write_list(list_to_write, file_name):
     f = open(file_name, 'w')
-    f.write('\n'.join([str(x) for x in list_to_write]))
+    f.write(LINE_SEP.join([str(x) for x in list_to_write]))
     f.close()
 
 
 def read_list(file_name):
     f = open(file_name)
-    loaded_list = [float(raw) for raw in f.read().split('\n')]
+    loaded_list = [float(raw) for raw in f.read().split(LINE_SEP)]
     f.close()
     return loaded_list

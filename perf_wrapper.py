@@ -1,6 +1,6 @@
 from time import perf_counter
 
-
+# wrapper to estimate performance
 def perf_wrapper(func, message):
     t_init = perf_counter()
     callback_return = func()

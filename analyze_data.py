@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from file_list_utils import read_list
 
-from generate_data import MEAN_1, MEAN_2, SIGMA, N_measurements, N_samples, \
+from generate_data import MEAN_1, MEAN_2, SIGMA, N_measurements, N_experiments, \
     ALPHA
 
 from histogram_utils import get_histogram_data
@@ -27,10 +27,12 @@ def get_log_likelihood_ratio(measurement, get_first_prob, get_second_prob):
 
 
 # Returns LLR for all experiments. Reads from output file from generate_data.py
-def get_llr_distribution(n_measurements, mean_1, mean_2, sigma,
-                         first=True):
+def get_llr_distribution(n_measurements, mean_1, mean_2, sigma, n_experiments,
+                         first=True, read_from_file=True):
     file_name = f'./outputs/rawdraw_{0 if first else 1}.txt'
-    load_raw = read_list(file_name)
+    load_raw = read_list(file_name) if read_from_file else np.random.normal(mean_1 if first else mean_2,
+                                        sigma/math.sqrt(n_measurements),
+                                        n_experiments)
     llr_ratios = [get_log_likelihood_ratio(measurement,
                                            lambda
                                                value: get_gaussian_probability(
@@ -59,24 +61,28 @@ def get_fnr(llr_measurements, lambda_threshold):
 
 
 # Analyzes data by calculating false negative rate
-def get_analyzed_data(mean_1, mean_2, sigma, n_measurements, alpha):
+def get_analyzed_data(mean_1, mean_2, sigma, n_measurements, n_experments, alpha, read_from_file=True):
     _hypothesis_1_llr = get_llr_distribution(n_measurements, mean_1, mean_2,
-                                             sigma)
+                                             sigma, n_experments, read_from_file=read_from_file)
     _lambda_alpha = np.percentile(_hypothesis_1_llr, 100 * alpha)
     _hypothesis_2_llr = get_llr_distribution(n_measurements, mean_1, mean_2,
-                                             sigma, False)
+                                             sigma, n_experiments=n_experments, first=False, read_from_file=read_from_file)
     _fnr = get_fnr(_hypothesis_2_llr, _lambda_alpha)
+    print('false negative rate: ', _fnr)
     return _hypothesis_1_llr, _hypothesis_2_llr, _lambda_alpha, _fnr
 
 
+# Plots the LLR histogram for both hypothesis. Calls numpy's histogram first
+# to get bins and probs and then passes them to plt.plot since plt.histogram
+# was too slow to directly calculate histogram
 def plot_hypothesis():
     hypothesis_1_llr, hypothesis_2_llr, lambda_alpha, fnr = get_analyzed_data(
-        MEAN_1, MEAN_2, SIGMA, N_measurements, ALPHA)
+        MEAN_1, MEAN_2, SIGMA, N_measurements, N_experiments, ALPHA)
 
     hypothesis_1_probs, hypothesis_1_bins = get_histogram_data(hypothesis_1_llr,
-                                                               N_samples + 1)
+                                                               N_experiments + 1)
     hypothesis_2_probs, hypothesis_2_bins = get_histogram_data(hypothesis_2_llr,
-                                                               N_samples + 1)
+                                                               N_experiments + 1)
 
     print('false negative rate: ', fnr)
 
