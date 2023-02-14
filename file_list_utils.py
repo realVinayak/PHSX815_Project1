@@ -26,4 +26,5 @@ def write_list(list_to_write, file_name):
 def read_list(file_name):
     f = open(file_name)
     loaded_list = [float(raw) for raw in f.read().split('\n')]
+    f.close()
     return loaded_list
