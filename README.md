@@ -7,12 +7,25 @@ The project is composed of two parts.
 <b>Structure and Contents</b>
 
 1. `./outputs/`: Contains all the output files generated - plots, random number dumps, data for generating plots
-2. `gaussian_analyzer_generator_driver.py`: Contains driver to run generating gaussian data, dumping it in file and then loading it from the file and then analyzing it. Just a simple wrapper for drivers from `generate_data_driver.py` and `plot_hypothesis.py`.
-3. `generate_data_driver.py`: Contains all definitions such as mean of null hypothesis, mean of test hypothesis, standard deviation, number of experiments, number of measurements (per experiment), sigma range (for second part), alpha, beta. These definitions are then exported everywhere else in the code so modify definitions in this file to modify any of these parameters. Draws random samples and dumps it into `./outputs/rawdraw_0.txt` and `./outputs/rawdraw_1.txt` (one for each hypothesis)
-4. `analyze_data.py`: Loads dump from `generate_data_driver.py` and analyzes the data to generate histogram for log likelihood ratio and calculate the false negative rate. The histogram is stored in `./outputs/analyzed_data.png`. 
-5. `min_n_variation_driver.py`: Contains driver that takes in a range of standard deviation (defined in `generate_data_driver.py`) and generates number of measurements needed to get false negative rate below a threshold (also defined in `generate_data_driver.py`). Just a wrapper around `get_min_n_fnr.py` and `analyze_min_n_fnr.py`. Saves the plot of number of measurements vs standard deviation to `./outputs/n_sigma_variation.png`.
-6. `get_min_n_fnr.py`: Takes in range of standard deviation and calculates minimum number of measurments needed to get false negative ratio below a threshold. Dumps list of pairs of number of measurements and standard deviations into `./outputs/n_sigma_variation.txt`.
-7. `analyze_min_n_fnr.py`: Loads pair of number of measurements and standard deviations from `./outputs/n_sigma_variation.txt` and generates plot. Saves the plot in `./outputs/n_sigma_variation.png`.
+2. `generate_data_driver.py`: Contains all definitions such as mean of null hypothesis, 
+mean of test hypothesis, standard deviation, number of experiments, number of measurements (per experiment), 
+sigma range (for second part), alpha, beta. These definitions are then exported everywhere else in the code so modify definitions 
+in this file to modify any of these parameters. Draws random samples and dumps it into `./outputs/rawdraw_0.txt` (for null hypothesis)
+and `./outputs/rawdraw_1.txt` (for test hypothesis). Provides a `generate_data_driver()` to execute all of this logic - used in driver (`gaussian_analyzer_generator_driver.py`).
+3. `analyze_data.py`: Reads random values drawn under each hypothesis from `./outputs/rawdraw_0.txt` and `./outputs/rawdraw_1.txt` and 
+calculates log likelihood ratio L(X|test hypothesis) / L(X | null hypothesis) for each experiment. Generates a histogram for the log likelihood ratio
+and calculates the false negative rate (which is printed to the terminal). The histogram is stored in `./outputs/analyzed_data.png`. Provides a `plot_hypothesis()`
+function as to execute all of this logic - used in driver (`gaussian_analyzer_generator_driver.py`).
+4. `gaussian_analyzer_generator_driver.py`: A driver wrapper for two functions: `generate_data_driver()` and `plot_hypothesis()`. `generate_data_driver()` generates and dumps the random variables drawn to a file. `plot_hypothesis()` is the driver to load random variables and then analyze them (generate LLR histograms - see above) . Just a simple wrapper for drivers from `generate_data_driver.py` and `plot_hypothesis.py`.
+5. `get_min_n_fnr.py`: Takes in range of standard deviation and for each standard deviation, calculates the minimum number 
+measurements needed to get false negative ratio below a threshold (the threshold beta is imported from `generate_data_driver.py`). 
+Dumps list of pairs of number of measurements and standard deviations into `./outputs/n_sigma_variation.txt`. Provides a `write_min_n_variation_driver()` function 
+to execute all this logic - used in driver (`min_n_variation_driver.py`)
+6. `analyze_min_n_fnr.py`: Loads pair of number of measurements and standard deviations from `./outputs/n_sigma_variation.txt` 
+and generates plot of number of measurements vs standard deviation. Saves the plot in `./outputs/n_sigma_variation.png`. Provides a `n_std_variation_plot_driver()`
+function to execute all this logic - used in driver (`min_n_variation_driver.py`)
+7. `min_n_variation_driver.py`: A driver wrapper for two functions: `write_min_n_variation_driver()` and `n_std_variation_plot_driver()`. `write_min_n_variation_driver()` calculates 
+and stores number of measurements and corresponding standard deviations to a file. `n_std_variation_plot_driver()` loads that file and generates a plot. See Above.
 8. `file_list_utils.py`: Contains functions to load and write lists to and from txt files simpler. Also supports multidimensional lists.
 9. `histogram_utils.py`: File contains `get_histogram_data()` which takes in measurements and number of samples and first generates a histogram using numpy (but doesn't plot it) and then returns a 2-d list of bins and probability at each bin which is used to plot. I had to implement this since MatPlotLib's histogram was slow for 1,000,000+ experiments.
 10. `perf_wrapper.py`: A basic wrapper to measure performance of functions. Not currently used anywhere.
