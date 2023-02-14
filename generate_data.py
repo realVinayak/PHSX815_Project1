@@ -26,6 +26,10 @@ def generate_data(n_measurements, n_experiments, mean_1, mean_2, sigma,
     print('written raw measurements to', file_name)
 
 
-if __name__ == '__main__':
+def generate_data_driver():
     generate_data(N_measurements, N_experiments, MEAN_1, MEAN_2, SIGMA)
     generate_data(N_measurements, N_experiments, MEAN_1, MEAN_2, SIGMA, False)
+
+
+if __name__ == '__main__':
+    generate_data_driver()

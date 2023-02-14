@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 # Plots relationship between minimum number of measurements and standard
 # deviation to get false negative rate below threshold
-def main():
+def n_std_variation_plot_driver():
     n_std_variation = read_multi_list('./outputs/n_sigma_variation.txt')
     std_list = [x[1] for x in n_std_variation]
     n_list = [x[0] for x in n_std_variation]
@@ -16,4 +16,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    n_std_variation_plot_driver()
