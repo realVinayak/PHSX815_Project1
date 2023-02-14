@@ -7,7 +7,7 @@ MEAN_1 = 2
 MEAN_2 = 3
 SIGMA = 1
 N_measurements = 20
-N_samples = 10
+N_samples = 1000000
 ALPHA = 0.95
 BETA = 10 ** (-3)
 
