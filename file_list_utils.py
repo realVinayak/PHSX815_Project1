@@ -19,7 +19,7 @@ def read_multi_list(file_name):
 
 def write_list(list_to_write, file_name):
     f = open(file_name, 'w')
-    f.write('\n'.join(list_to_write))
+    f.write('\n'.join([str(x) for x in list_to_write]))
     f.close()
 
 
