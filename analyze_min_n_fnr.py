@@ -13,6 +13,7 @@ def n_std_variation_plot_driver():
     plt.ylabel('Number of Measurements')
     plt.title('\u03B2 = 10\u207B\u00B3')
     plt.savefig('./outputs/n_sigma_variation.png')
+    plt.show()
 
 
 if __name__ == '__main__':

@@ -103,6 +103,7 @@ def plot_hypothesis():
     plt.title(f'{N_measurements} number of measurements')
     plt.legend(['P(\u03BB|H1)', 'P(\u03BB|H2)'])
     plt.savefig('./outputs/analyzed_data.png')
+    plt.show()
 
 
 if __name__ == '__main__':
